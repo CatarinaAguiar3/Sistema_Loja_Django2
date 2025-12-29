@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Teste{% endblock %}
+
+{% block content %}
+
+<!-- LISTA DE CATEGORIAS E FORNCEDORES-->
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Lista de Categorias</h5>    
+                {% for categoria in categorias %}
+                <p class="card-title"> {{ categoria.name }}</p>
+                {% empty %}
+                <p class="text-danger">Nenhuma categoria disponível.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+        <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Lista de Fornecedores</h5>    
+                {% for fornecedor in fornecedores %}
+                <p class="card-title">{{ fornecedor.name }}</p>
+                {% empty %}
+                <p class="text-danger">Nenhum fornecedor disponível.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<!-- FORMULÁRIO DE FILTRO -->
+<form method="get" class="row g-2 mb-4">
+    
+    <!-- Filtro por nome -->
+    <div class="col-md-4">
+        <input 
+            type="text"  
+            name="nome" 
+            class="form-control" 
+            placeholder="Nome do produto"
+            value="{{ request.GET.nome }}"
+        >
+        <!--  
+        <input ...> é uma tag que espeficifica um campo de entrada em um formulário HTML.  
+        <input type="text" ...> indica que é um campo de texto onde o usuário pode digitar informações.
+           
+        <input 
+            type="text"                # Campo de texto para o nome do produto 
+            name="nome"                # Nome do campo (variável enviada ao Django)
+            class="form-control"       # Estilo Bootstrap
+            placeholder="Nome do produto"
+            value="{{ request.GET.nome }}"
+        -->
+    </div>
+
+    <!-- Filtro por categoria -->
+    <div class="col-md-3"> <!-- col-md-3: ocupa 3 colunas no layout-->
+        <select name="categoria" class="form-select"> <!--name="categoria" é o valor que vai aparecer na URL -->
+            <option value="">Todas as categorias</option> <!--value="" significa não filtrar. Por trás, está rodando: request.GET.get('categoria')-->
+            {% for categoria in categorias %} <!-- Loop pelas categorias disponíveis. Por trás (na view), está rodando: categorias = Category.objects.all() -->
+                <option 
+                    value="{{ categoria.id }}" 
+                    {% if request.GET.categoria == categoria.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ categoria.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <!--   
+    <option ...> # É uma lista suspensa dentro de um formulário HTML
+                 # Neste caso, estou criando 2 opções: "Todas as categorias" (<option value="">) e uma para cada categoria disponível no banco de dados
+
+    # EXPLICAÇÃO DO <option> PARA CADA CATEGORIA:                
+    <option 
+        value="{{ categoria.id }}"                                        # ID da categoria (o Django usa isso para filtrar os produtos. Pois é um valor único e é mais rápido)
+        {% if request.GET.categoria == categoria.id|stringformat:"s" %}   # categoria.id|stringformat:"s" -> converte o ID para string para comparação
+                                                                          # Isso é importante porque request.GET retorna strings e categoria.id é um inteiro
+                                                                          # Ex: "2" == 2 -> False 
+                                                                          # Aplicando stringformat:"s" na categoria.id, a comparação fica "2" == "2" -> True
+            selected                                                      # Quando a página carregar (renderizar), a opção escolhida no filtro permanecerá selecionada
+        {% endif %}
+    >
+        {{ categoria.name }}                                              # Mostra o nome da categoria
+    </option>
+    -->
+
+    <!-- Filtro por fornecedor -->
+    <div class="col-md-3">
+        <select name="fornecedor" class="form-select">
+            <option value="">Todos os fornecedores</option>
+            {% for fornecedor in fornecedores %}
+                <option 
+                    value="{{ fornecedor.id }}"
+                    {% if request.GET.fornecedor == fornecedor.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ fornecedor.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Botão -->
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Filtrar
+        </button>
+    </div>
+
+</form>
+<br>
+
+<!-- LISTA DE PRODUTOS (ESSA PARTE É IGUAL AO "product_list.html") -->
+<div class="d-flex justify-content-between align-items-center mb-3">    
+    <h1>Lista de Produtos</h1>
+    <a href="#" class="btn btn-primary">Adicionar Produto</a>
+</div>
+<div class="row">
+    {% for produto in produtos %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img src="{{ produto.url_image }}" alt="{{ produto.name }}" class="card-img-top rounded mx-auto d-block" style="width: auto; height: auto; max-width: 200px; max-height: 200px; ">
+            <div class="card-body">
+                <h5 class="card-title">{{ produto.name }}</h5>
+                <p class="card-text"> {{ produto.description|truncatewords:20 }}</p>
+                <h6 class="card-subtitle mb-2 text-muted">Preço: R${{ produto.price }}</h6>
+                <p class="card-text">
+                    <small class="text-muted">
+                        Estoque: {{ produto.stock}}
+                    </small>
+                </p>
+                <a href="#" class="btn btn-secondary">Editar</a>
+                <a href="#" class="btn btn-danger">Excluir</a>
+
+
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col">
+        <p class="text-danger">Nenhum produto disponível.</p>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
