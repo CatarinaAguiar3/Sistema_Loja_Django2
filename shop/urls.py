@@ -13,3 +13,7 @@ urlpatterns = [
     path("edit_category/<int:pk>/", views.category_update, name="category_update"),
     path("category_select/", views.category_select, name="category_select"),
 ]
+
+# Rotas Curingas
+# Página quando encontra error 404
+handler404 = "shop.views.custom_page_not_found_view"

@@ -173,3 +173,8 @@ def category_select(request):
         return redirect('category_update', pk=category_id) # Redireciona o ID da categoria para a view 
                                                            # category_update (edição de categoria)
     return redirect('product_create') # Caso nenhuma categoria tenha sido selecionada, volta para a tela de criação de produto
+
+# VIEW PARA PÁGINA PERSONALIZADA DE ERRO 404
+def custom_page_not_found_view(request):
+    # You can add custom logic here
+    return render(request, "404.html", {"additional_context": "some_data"}, status=404) # status -> STATUS DE COMUNICAÇÃO HTTP (404 = Not Found)
