@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Product, Category, Supplier
 from .forms import ProductForm, SupplierForm, CategoryForm, UserForm
+from datetime import datetime
+import pytz
 
 def is_staff_user(user):
     return user.is_staff
@@ -214,3 +216,4 @@ def category_select(request):
 def custom_page_not_found_view(request):
     # You can add custom logic here
     return render(request, "404.html", {"additional_context": "some_data"}, status=404) # status -> STATUS DE COMUNICAÇÃO HTTP (404 = Not Found)
+

@@ -66,6 +66,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.static",
+                "shop.context_processors.ano_corrente",
+                "shop.context_processors.data_corrente_completa",
 
             ],
         },
