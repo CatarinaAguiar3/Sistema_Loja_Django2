@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path("", views.product_list, name="product_list"),
+    path("login/", views.user_login, name="user_login"),
+    path("logout/", views.user_logout, name="user_logout"),
     path("teste/", views.teste, name="teste"),
     path("create_product/", views.product_create, name="product_create"), # rota para tela que cria produto
     path("create_category/", views.category_create, name="category_create"),

@@ -12,6 +12,17 @@
             <a href="{% url 'product_list' %}" class="navbar-brand">
                 Loja de Produtos
             </a>
+            <div class="d-flex">
+                {% if user.is_authenticated %}
+                 <span class="navbar-text text-white me-3">
+                    Olá, {{ user.username}}
+                 </span>
+                 <a href="{% url 'user_logout' %}" class="btn btn-outline-light">Sair</a>
+                {% else %}
+                <a href="{% url 'user_login' %}" class="btn btn-outline-light">Entrar</a>
+
+                {% endif %}
+            </div>
         </div>
     </nav>
 

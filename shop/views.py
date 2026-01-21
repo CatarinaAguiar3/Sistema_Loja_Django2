@@ -1,7 +1,29 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test # proteger a tela
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Product, Category, Supplier
 from .forms import ProductForm, SupplierForm, CategoryForm, UserForm
+
+def is_staff_user(user):
+    return user.is_staff
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('product_list')
+        else:
+            return render(request, 'login.html', {'error': 'Usuário ou senha inválidos.'})
+    return render(request, 'login.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('product_list')
+
 
 # Create your views here.
 def product_list(request):
@@ -61,7 +83,8 @@ def teste(request): # request é o que o usuário envia para o servidor. Ou seja
     # Enviar os dados da view para o template em forma de dicionário (context)
     return render(request, 'teste.html', {'produtos': produtos, 'categorias': categorias, 'fornecedores': fornecedores}) # O produto retorna como uma lista
 
-
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # VIEW PARA CRIAR PRODUTO (FORMULÁRIO)
 def product_create(request):
     if request.method == 'POST':
@@ -77,7 +100,8 @@ def product_create(request):
 
     return render(request, 'product_form.html', {'form': form})    
 
-
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -89,6 +113,8 @@ def category_create(request):
 
     return render(request, 'category_form.html', {'form': form})
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 def supplier_create(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -100,6 +126,8 @@ def supplier_create(request):
 
     return render(request, 'supplier_form.html', {'form': form})
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # EDITAR PRODUTO
 def product_update(request, pk): # Receber um request e o pk do produto a ser editado
     product = get_object_or_404(Product, pk=pk) # Se o produto existir, guarda ele. Caso não exista, mostra uma tela 404
@@ -114,6 +142,8 @@ def product_update(request, pk): # Receber um request e o pk do produto a ser ed
 
     return render(request, 'product_form.html', {'form': form})    
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # DELETAR PRODUTO
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -124,6 +154,8 @@ def product_delete(request, pk):
 
     return render(request, 'product_confirm_delete.html', {'product': product})
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # VIEW PARA CRIAR USUÁRIO (FORMULÁRIO)
 def user_create(request):
     if request.method == 'POST': # Se o método for POST, significa que o usuário enviou o formulário preenchido
@@ -149,6 +181,8 @@ def user_create(request):
     return render(request, 'user_form.html', {'form': form}) # OBS: Esta linha é executada tanto no caso de GET (formulário vazio) 
                                                              #      quanto no caso de POST com formulário inválido
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # EDITAR CATEGORIA
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk) # busca categoria pelo ID (pk). Se não achar, retorna uma tela 404
@@ -166,6 +200,8 @@ def category_update(request, pk):
     # Enviar os dados da view para o template em forma de dicionário (context)
     return render(request, 'category_form.html', {'form': form})
 
+@login_required(login_url='user_login') #decorater que verifica se o usuário está logado. Se não estiver, redireciona para a tela de login
+@user_passes_test(is_staff_user) #decorator para proteger a tela (apenas usuários staff podem acessar)  
 # VIEW PARA SELECIONAR CATEGORIA E REDIRECIONAR PARA TELA DE EDIÇÃO
 def category_select(request):
     category_id = request.GET.get('category_id') # Pega da URL o ID da categoria selecionada
