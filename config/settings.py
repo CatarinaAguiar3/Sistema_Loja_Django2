@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "shop",
+    "api",
+    "rest_framework",
+    "drf_yasg",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -73,6 +77,14 @@ TEMPLATES = [
         },
     },
 ]
+
+# Paginação na API
+# OBS: Coloquei tudo em maiusculo pq é variável global de configuração
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,  # Número de itens por página
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+}
 
 WSGI_APPLICATION = "config.wsgi.application"
 
